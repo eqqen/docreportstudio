@@ -6,18 +6,21 @@
 
 ```
 docreportstudio/
-├── index.html              ← лендинг (главная)
-├── auth/
-│   └── callback.html       ← страница приёма magic-link (создадим на шаге 5)
-├── app/
-│   ├── index.html          ← дашборд после входа (создадим на шаге 6)
-│   ├── cervical/
-│   │   └── index.html      ← МРТ ШОП (перенесём из Cervical-standalone-2026fix4)
-│   └── lspine/
-│       └── index.html      ← МРТ ПОП (перенесём из L-spine-standalone-2026fix4)
+├── public/                 ← публичный корень (то, что отдаётся в интернет)
+│   ├── index.html          ← лендинг (главная)
+│   ├── auth/
+│   │   └── callback.html   ← приём magic-link (создадим на шаге 5)
+│   └── app/
+│       ├── index.html      ← дашборд после входа (шаг 6)
+│       ├── cervical/
+│       │   └── index.html  ← МРТ ШОП (перенесём на шаге 7)
+│       └── lspine/
+│           └── index.html  ← МРТ ПОП (шаг 7)
 ├── supabase/
 │   └── schema.sql          ← схема БД, выполнить в Supabase SQL Editor
-└── README.md               ← этот файл
+├── wrangler.jsonc          ← конфиг Cloudflare Workers (assets → ./public)
+├── .gitignore
+└── README.md
 ```
 
 ## Текущий статус
