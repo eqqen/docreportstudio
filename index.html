@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>docreportstudio.com — протоколы МРТ для рентгенологов</title>
+  <meta name="description" content="Генератор готовых протоколов МРТ. Шейный и поясничный отдел. Для рентгенологов МРТ.">
+
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --border: #e5e7eb;
+      --soft: #f3f4f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .btn-login {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-login:hover { background: var(--soft); }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      max-width: 780px;
+      margin: 0 auto 20px;
+    }
+
+    .hero h1 .highlight {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 19px;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 36px;
+    }
+
+    .cta-form {
+      max-width: 460px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cta-form input[type=email] {
+      flex: 1;
+      min-width: 220px;
+      padding: 14px 16px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .cta-form input[type=email]:focus {
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .cta-note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    /* Features */
+    .features {
+      padding: 60px 0 80px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+
+    .feature .icon {
+      width: 40px;
+      height: 40px;
+      background: var(--soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 22px;
+    }
+
+    .feature h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    /* Apps section */
+    .apps {
+      padding: 60px 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 580px;
+      margin: 0 auto 48px;
+    }
+
+    .app-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .app-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      background: var(--bg);
+    }
+
+    .app-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .app-card .modality {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      background: #eff6ff;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .app-card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .app-card.coming-soon {
+      opacity: 0.55;
+    }
+
+    .app-card.coming-soon .modality {
+      color: var(--muted);
+      background: var(--soft);
+    }
+
+    /* FAQ */
+    .faq {
+      padding: 80px 0;
+    }
+
+    .faq-list {
+      max-width: 720px;
+      margin: 40px auto 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .faq-item h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .faq-item p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      margin: 0 12px;
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 60px 0 40px; }
+      .hero h1 { font-size: 32px; }
+      .hero p { font-size: 16px; }
+      .section-title { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav">
+      <a href="/" class="logo">docreport<span>studio</span></a>
+      <a href="#cta" class="btn-login">Войти</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Готовые протоколы МРТ <span class="highlight">за 90 секунд</span></h1>
+      <p>Инструмент для рентгенологов. Шаблоны, комплексные формулировки и автогенерация заключений по МРТ шейного и поясничного отдела позвоночника.</p>
+
+      <form class="cta-form" id="signup-form" action="#cta" id="cta">
+        <input type="email" id="email" name="email" placeholder="ваш@email.ru" required>
+        <button type="submit" class="btn-primary">Попробовать</button>
+      </form>
+      <div class="cta-note">Бесплатный доступ на этапе беты — без банковской карты</div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <h2 class="section-title">Что внутри</h2>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="icon">⚡</div>
+          <h3>Быстрее в 3–5 раз</h3>
+          <p>Готовые блоки описания на кончиках пальцев, выверенные заключения. Меньше переписывания одного и того же.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">📐</div>
+          <h3>По стандарту</h3>
+          <p>Структура соответствует рекомендациям РОРР и международным гайдлайнам ESSR.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🔄</div>
+          <h3>Регулярные апдейты</h3>
+          <p>Новые шаблоны и фиксы каждые 2 недели на основе обратной связи врачей.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="apps">
+    <div class="container">
+      <h2 class="section-title">Доступные модули</h2>
+      <p class="section-subtitle">Сейчас в работе шейный и поясничный отделы. На очереди — грудной отдел, коленный сустав, головной мозг.</p>
+      <div class="app-cards">
+        <div class="app-card">
+          <span class="modality">МРТ ШОП</span>
+          <h3>Шейный отдел позвоночника</h3>
+          <p>Полный протокол: пошаговые фразовые пакеты, визуальное подкрепление, заключение с автоподстановкой по находкам.</p>
+        </div>
+        <div class="app-card">
+          <span class="modality">МРТ ПОП</span>
+          <h3>Поясничный отдел позвоночника</h3>
+          <p>Полный протокол: оптимальные пошаговые пакеты с визуальным подкреплением (варианты развития, листезы, стенозы, деформации) — всё для дегенеративных изменений и грыж.</p>
+        </div>
+        <div class="app-card coming-soon">
+          <span class="modality">скоро</span>
+          <h3>Грудной отдел / коленный сустав / головной мозг</h3>
+          <p>В разработке. Станут доступны в течение 2–6 месяцев.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq">
+    <div class="container">
+      <h2 class="section-title">Вопросы</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3>Это бесплатно?</h3>
+          <p>На этапе беты — да, без ограничений. После окончания беты введём подписку. У ранних бета-пользователей будет приоритетная цена.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Кому это подходит?</h3>
+          <p>Врачам, занимающимся МРТ-диагностикой, регулярно работающим со спинальной патологией, и молодым специалистам. Удобно как для частной практики, так и для штатных позиций в клиниках.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Где хранятся данные?</h3>
+          <p>Сервис не получает доступа к ПДн пациентов: вы отмечаете находки, мы формируем протокол описания. Хранится только ваш email и история использования инструментов.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Как стать бета-тестером?</h3>
+          <p>Введите email выше — придёт письмо со ссылкой на вход. Доступ открывается сразу.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div>© 2026 docreportstudio.com</div>
+      <div style="margin-top: 8px;">
+        <a href="/privacy.html">Политика конфиденциальности</a>
+        <a href="/terms.html">Условия использования</a>
+        <a href="https://t.me/" target="_blank">Telegram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Заглушка обработки формы — позже подключим Supabase
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      alert('Спасибо! На этапе разработки. Подключим Supabase на следующем шаге.\n\nEmail: ' + email);
+    });
+  </script>
+
+</body>
+</html>
