@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход — docreportstudio</title>
+  <meta name="robots" content="noindex">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: #fafafa;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      max-width: 440px;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    p {
+      color: #6b7280;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .spinner {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      border: 3px solid #e5e7eb;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .error h1 { color: #991b1b; }
+    .error-detail {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #9ca3af;
+      word-break: break-word;
+    }
+    .btn-back {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .btn-back:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="spinner"></div>
+    <h1>Подтверждаем вход…</h1>
+    <p>Это займёт пару секунд.</p>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+    const supabase = createClient(
+      'https://jgzsbfzivqlvruwewigg.supabase.co',
+      'sb_publishable_zRM4hYATscFC1m98kYQRtg_MzkeD0BO'
+    )
+
+    const card = document.getElementById('card')
+
+    function showError(message, detail) {
+      card.classList.add('error')
+      card.innerHTML = `
+        <h1>Не удалось войти</h1>
+        <p>${message}</p>
+        <a href="/" class="btn-back">Запросить новую ссылку</a>
+        ${detail ? '<div class="error-detail">' + detail + '</div>' : ''}
+      `
+    }
+
+    // supabase-js при инициализации с detectSessionInUrl=true (по умолчанию)
+    // сам разберёт URL с токенами/кодом и положит сессию в localStorage.
+    // Даём ему время на это, потом проверяем сессию.
+    setTimeout(async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+
+        if (error) {
+          showError('Произошла ошибка при подтверждении.', error.message)
+          return
+        }
+
+        if (session) {
+          window.location.replace('/app/')
+        } else {
+          showError(
+            'Ссылка устарела или уже использовалась. Запросите новую.',
+            null
+          )
+        }
+      } catch (err) {
+        showError('Неожиданная ошибка при подтверждении.', String(err))
+      }
+    }, 1500)
+  </script>
+</body>
+</html>

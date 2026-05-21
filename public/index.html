@@ -144,6 +144,36 @@
       margin-top: 14px;
     }
 
+    .cta-status {
+      display: none;
+      max-width: 460px;
+      margin: 20px auto 0;
+      padding: 16px 20px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .cta-status.show { display: block; }
+
+    .cta-status-success {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .cta-status-error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     /* Features */
     .features {
       padding: 60px 0 80px;
@@ -324,11 +354,12 @@
       <h1>Готовые протоколы МРТ <span class="highlight">за 90 секунд</span></h1>
       <p>Инструмент для рентгенологов. Шаблоны, комплексные формулировки и автогенерация заключений по МРТ шейного и поясничного отдела позвоночника.</p>
 
-      <form class="cta-form" id="signup-form" action="#cta" id="cta">
-        <input type="email" id="email" name="email" placeholder="ваш@email.ru" required>
-        <button type="submit" class="btn-primary">Попробовать</button>
+      <form class="cta-form" id="signup-form">
+        <input type="email" id="email" name="email" placeholder="ваш@email.ru" autocomplete="email" required>
+        <button type="submit" class="btn-primary" id="submit-btn">Попробовать</button>
       </form>
-      <div class="cta-note">Бесплатный доступ на этапе беты — без банковской карты</div>
+      <div class="cta-note" id="cta-note">Бесплатный доступ на этапе беты — без банковской карты</div>
+      <div class="cta-status" id="cta-status"></div>
     </div>
   </section>
 
@@ -414,13 +445,62 @@
     </div>
   </footer>
 
-  <script>
-    // Заглушка обработки формы — позже подключим Supabase
-    document.getElementById('signup-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      alert('Спасибо! На этапе разработки. Подключим Supabase на следующем шаге.\n\nEmail: ' + email);
-    });
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+    const SUPABASE_URL = 'https://jgzsbfzivqlvruwewigg.supabase.co'
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_zRM4hYATscFC1m98kYQRtg_MzkeD0BO'
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+
+    // Если пользователь уже залогинен — сразу в дашборд
+    const { data: { session: existingSession } } = await supabase.auth.getSession()
+    if (existingSession) {
+      window.location.href = '/app/'
+    }
+
+    const form = document.getElementById('signup-form')
+    const emailInput = document.getElementById('email')
+    const submitBtn = document.getElementById('submit-btn')
+    const note = document.getElementById('cta-note')
+    const status = document.getElementById('cta-status')
+
+    function showStatus(message, type) {
+      status.innerHTML = message
+      status.className = 'cta-status show cta-status-' + type
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const email = emailInput.value.trim().toLowerCase()
+      if (!email) return
+
+      submitBtn.disabled = true
+      submitBtn.textContent = 'Отправляем...'
+      status.className = 'cta-status'
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin + '/auth/callback'
+        }
+      })
+
+      if (error) {
+        submitBtn.disabled = false
+        submitBtn.textContent = 'Попробовать'
+        showStatus('Не удалось отправить ссылку: ' + error.message, 'error')
+        return
+      }
+
+      form.style.display = 'none'
+      note.style.display = 'none'
+      showStatus(
+        '✓ Ссылка для входа отправлена на <strong>' + email + '</strong>.<br>' +
+        'Проверьте почту (и папку «Спам»). Письмо приходит в течение минуты.',
+        'success'
+      )
+    })
   </script>
 
 </body>
