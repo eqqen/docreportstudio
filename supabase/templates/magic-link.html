@@ -1,0 +1,40 @@
+<!-- Supabase Email Template: Magic Link -->
+<!-- Subject: Вход в docreportstudio -->
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#fafafa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;padding:40px 20px;">
+  <tr>
+    <td align="center">
+      <table cellpadding="0" cellspacing="0" border="0" width="480" style="background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;padding:40px 32px;">
+        <tr>
+          <td>
+            <div style="text-align:center;font-size:18px;font-weight:700;margin-bottom:24px;color:#1a1a1a;letter-spacing:-0.02em;">
+              docreport<span style="color:#2563eb;">studio</span>
+            </div>
+            <h1 style="font-size:22px;font-weight:700;margin:0 0 16px;color:#1a1a1a;">Вход в docreportstudio</h1>
+            <p style="font-size:15px;line-height:1.55;color:#4b5563;margin:0 0 24px;">
+              Нажмите кнопку, чтобы войти в свой аккаунт. Ссылка действительна один час.
+            </p>
+            <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 24px;">
+              <tr>
+                <td>
+                  <a href="{{ .ConfirmationURL }}" style="background:#2563eb;color:#ffffff;padding:14px 28px;text-decoration:none;border-radius:10px;font-weight:600;font-size:15px;display:inline-block;">
+                    Войти в docreportstudio
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="font-size:13px;line-height:1.55;color:#6b7280;margin:0 0 8px;">
+              Если кнопка не работает, скопируйте ссылку в браузер:
+            </p>
+            <p style="font-size:12px;line-height:1.4;color:#9ca3af;word-break:break-all;margin:0;">
+              {{ .ConfirmationURL }}
+            </p>
+            <hr style="border:0;border-top:1px solid #e5e7eb;margin:32px 0 20px;">
+            <p style="font-size:12px;color:#9ca3af;margin:0;text-align:center;">
+              Если вы не запрашивали вход, проигнорируйте это письмо.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
