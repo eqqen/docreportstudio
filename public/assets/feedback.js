@@ -24,14 +24,14 @@ style.textContent = `
   .dr-fb-trigger {
     position: fixed;
     bottom: 20px;
-    right: 20px;
+    left: 20px;
     z-index: 9998;
     background: #2563eb;
     color: #ffffff;
     border: none;
-    padding: 11px 18px;
+    padding: 9px 14px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     opacity: 0.45;
@@ -154,7 +154,7 @@ style.textContent = `
   }
 
   @media (max-width: 480px) {
-    .dr-fb-trigger { padding: 10px 16px; font-size: 12px; bottom: 16px; right: 16px; }
+    .dr-fb-trigger { padding: 8px 12px; font-size: 11px; bottom: 16px; left: 16px; }
     .dr-fb-card { padding: 22px; }
   }
 `
