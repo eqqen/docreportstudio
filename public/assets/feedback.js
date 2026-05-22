@@ -29,23 +29,54 @@ style.textContent = `
     background: #2563eb;
     color: #ffffff;
     border: none;
-    padding: 9px 14px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 600;
+    line-height: 1;
     cursor: pointer;
-    opacity: 0.45;
+    opacity: 0.4;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    transition: opacity 0.2s, background 0.15s, transform 0.15s, box-shadow 0.2s;
+    transition: opacity 0.2s, width 0.25s ease, padding 0.25s ease, background 0.15s, box-shadow 0.2s;
   }
-  .dr-fb-trigger:hover {
+  .dr-fb-trigger:hover,
+  .dr-fb-trigger:focus-visible {
+    width: auto;
+    padding: 0 16px 0 12px;
     opacity: 1;
     background: #1d4ed8;
-    transform: translateY(-1px);
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    outline: none;
   }
-  .dr-fb-trigger:active { transform: translateY(0); }
+  .dr-fb-trigger:active { transform: translateY(1px); }
+  .dr-fb-trigger .dr-fb-icon {
+    font-size: 15px;
+    line-height: 1;
+    display: inline-block;
+  }
+  .dr-fb-trigger .dr-fb-label {
+    max-width: 0;
+    opacity: 0;
+    font-size: 12px;
+    font-weight: 600;
+    overflow: hidden;
+    transition: max-width 0.25s ease, opacity 0.2s ease, margin-left 0.25s ease;
+    margin-left: 0;
+  }
+  .dr-fb-trigger:hover .dr-fb-label,
+  .dr-fb-trigger:focus-visible .dr-fb-label {
+    max-width: 200px;
+    opacity: 1;
+    margin-left: 8px;
+  }
 
   .dr-fb-overlay {
     display: none;
@@ -154,7 +185,7 @@ style.textContent = `
   }
 
   @media (max-width: 480px) {
-    .dr-fb-trigger { padding: 8px 12px; font-size: 11px; bottom: 16px; left: 16px; }
+    .dr-fb-trigger { bottom: 16px; left: 16px; width: 36px; height: 36px; }
     .dr-fb-card { padding: 22px; }
   }
 `
@@ -164,7 +195,7 @@ document.head.appendChild(style)
 const root = document.createElement('div')
 root.id = 'dr-fb-root'
 root.innerHTML = `
-  <button class="dr-fb-trigger" type="button" aria-label="Обратная связь">💬 Обратная связь</button>
+  <button class="dr-fb-trigger" type="button" aria-label="Обратная связь" title="Обратная связь"><span class="dr-fb-icon">💬</span><span class="dr-fb-label">Обратная связь</span></button>
   <div class="dr-fb-overlay" role="dialog" aria-modal="true">
     <div class="dr-fb-card">
       <h3>Обратная связь</h3>
