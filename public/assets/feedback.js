@@ -23,8 +23,8 @@ const style = document.createElement('style')
 style.textContent = `
   .dr-fb-trigger {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
+    top: 20px;
+    right: 20px;
     z-index: 9998;
     background: #2563eb;
     color: #ffffff;
@@ -185,7 +185,7 @@ style.textContent = `
   }
 
   @media (max-width: 480px) {
-    .dr-fb-trigger { bottom: 16px; left: 16px; width: 36px; height: 36px; }
+    .dr-fb-trigger { top: 16px; right: 16px; width: 36px; height: 36px; }
     .dr-fb-card { padding: 22px; }
   }
 `
