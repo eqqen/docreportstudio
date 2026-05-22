@@ -34,11 +34,17 @@ style.textContent = `
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    opacity: 0.45;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-    transition: background 0.15s, transform 0.15s;
+    transition: opacity 0.2s, background 0.15s, transform 0.15s, box-shadow 0.2s;
   }
-  .dr-fb-trigger:hover { background: #1d4ed8; transform: translateY(-1px); }
+  .dr-fb-trigger:hover {
+    opacity: 1;
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  }
   .dr-fb-trigger:active { transform: translateY(0); }
 
   .dr-fb-overlay {
