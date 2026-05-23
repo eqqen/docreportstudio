@@ -30,6 +30,22 @@
       }
     </script>
 
+    <!-- Отключаем dblclick-навигацию на чисто тач-устройствах (телефон/планшет без мыши) -->
+    <script>
+      (function () {
+        try {
+          var isTouchOnly = window.matchMedia('(pointer: coarse)').matches
+                         && !window.matchMedia('(pointer: fine)').matches;
+          if (isTouchOnly) {
+            document.addEventListener('dblclick', function (e) {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+            }, true);
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <style>
         * {
             margin: 0;
