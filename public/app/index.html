@@ -78,11 +78,13 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 24px;
+      padding: 20px 22px;
       text-decoration: none;
       color: inherit;
       transition: border-color 0.15s, transform 0.15s;
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     .app-card:hover:not(.disabled) {
       border-color: var(--accent);
@@ -92,6 +94,15 @@
       opacity: 0.55;
       cursor: not-allowed;
     }
+    .app-card-content { flex: 1; min-width: 0; }
+    .app-card-icon {
+      width: 76px;
+      height: 76px;
+      flex-shrink: 0;
+      object-fit: contain;
+      border-radius: 12px;
+      background: var(--soft);
+    }
     .badge {
       display: inline-block;
       font-size: 11px;
@@ -100,7 +111,7 @@
       background: #eff6ff;
       padding: 3px 10px;
       border-radius: 999px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -108,7 +119,7 @@
       color: var(--muted);
       background: var(--soft);
     }
-    .app-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .app-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
     .app-card p { color: var(--muted); font-size: 14px; }
 
     .loading {
@@ -144,15 +155,21 @@
 
     <div class="apps">
       <a href="/app/cervical/" class="app-card" id="card-cervical">
-        <span class="badge">МРТ ШОП</span>
-        <h3>Шейный отдел позвоночника</h3>
-        <p>Сформировать готовый протокол МРТ ШОП</p>
+        <div class="app-card-content">
+          <span class="badge">МРТ ШОП</span>
+          <h3>Шейный отдел позвоночника</h3>
+          <p>Сформировать готовый протокол МРТ ШОП</p>
+        </div>
+        <img class="app-card-icon" src="/assets/icon-cervical.jpg" alt="" loading="lazy">
       </a>
 
       <a href="/app/lspine/" class="app-card" id="card-lspine">
-        <span class="badge">МРТ ПОП</span>
-        <h3>Поясничный отдел позвоночника</h3>
-        <p>Сформировать готовый протокол МРТ ПОП</p>
+        <div class="app-card-content">
+          <span class="badge">МРТ ПОП</span>
+          <h3>Поясничный отдел позвоночника</h3>
+          <p>Сформировать готовый протокол МРТ ПОП</p>
+        </div>
+        <img class="app-card-icon" src="/assets/icon-lspine.jpg" alt="" loading="lazy">
       </a>
     </div>
   </main>
