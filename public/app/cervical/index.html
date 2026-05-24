@@ -46,6 +46,7 @@
       })();
     </script>
 
+
     <style>
         * {
             margin: 0;
@@ -3358,10 +3359,26 @@
                     }
                 }
                 
-                // FIX20 (B-1): хвост "наиболее выраженное в X" добавляем при любых смешанных степенях,
-                // в т.ч. когда все сегменты идут одной смежной цепочкой (раньше требовалось allGroups.length > 1).
+                // FIX20 (B-1) + FIX28: хвост "наиболее выраженное …" добавляем при смешанных
+                // степенях. Если worst-сегменты совпадают с сегментами основной фразы —
+                // не повторяем их, а используем только сторону (или вовсе опускаем хвост,
+                // если worst распределён на обе стороны).
                 if (hasMultipleSeverityLevels && mostExpressedText) {
-                    sentence += `, наиболее выраженное в ${mostExpressedText}`;
+                    const _mainSet = new Set(allUniqueSegments.map(o => o.segment));
+                    const _worstSet = new Set(mostExpressedUniqueSegments.map(o => o.segment));
+                    const _sameSet = _mainSet.size === _worstSet.size &&
+                        [..._mainSet].every(s => _worstSet.has(s));
+                    const _worstSides = new Set();
+                    sideEntries.forEach(e => { if (e.idx === minIdx) _worstSides.add(e.side); });
+                    if (_sameSet) {
+                        if (_worstSides.size === 1) {
+                            const _sideWord = _worstSides.has('right') ? 'справа' : 'слева';
+                            sentence += `, наиболее выраженное ${_sideWord}`;
+                        }
+                        // обе стороны — хвост опускаем, информация уже в основной фразе
+                    } else {
+                        sentence += `, наиболее выраженное в ${mostExpressedText}`;
+                    }
                 }
 
                 // FIX20 (C-1): хвост про унковертебральные суставы — только при "Умеренные" и выше (>= 2).
@@ -17147,5 +17164,4 @@ if (optionIndex === 0) {
 </script>
 </body>
 
-</html>
 </html>
