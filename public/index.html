@@ -333,11 +333,34 @@
       color: var(--text);
     }
 
+    .demo {
+      padding: 70px 0 40px;
+    }
+    .demo .section-subtitle {
+      margin-bottom: 32px;
+    }
+    .demo-video-wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.07);
+    }
+    .demo-video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
     @media (max-width: 600px) {
       .hero { padding: 60px 0 40px; }
       .hero h1 { font-size: 32px; }
       .hero p { font-size: 16px; }
       .section-title { font-size: 26px; }
+      .demo { padding: 50px 0 20px; }
+      .demo-video-wrap { border-radius: 12px; }
     }
   </style>
 
@@ -396,6 +419,19 @@
           <h3>Регулярные апдейты</h3>
           <p>Новые шаблоны и фиксы каждые 2 недели на основе обратной связи врачей.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo">
+    <div class="container">
+      <h2 class="section-title">Как это выглядит</h2>
+      <p class="section-subtitle">От письма до готового протокола — за 20 секунд</p>
+      <div class="demo-video-wrap">
+        <video class="demo-video" autoplay muted loop playsinline preload="metadata" aria-label="Обзор интерфейса docreportstudio">
+          <source src="/assets/walkthrough-20s.mp4" type="video/mp4">
+          Ваш браузер не поддерживает встроенное видео. <a href="/assets/walkthrough-20s.mp4">Скачать видео</a>.
+        </video>
       </div>
     </div>
   </section>
