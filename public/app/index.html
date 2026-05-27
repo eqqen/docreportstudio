@@ -123,6 +123,96 @@
     .app-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
     .app-card p { color: var(--muted); font-size: 14px; }
 
+    .onboarding-hint {
+      display: none;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 22px 56px 22px 24px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .onboarding-hint h2 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+    .onboarding-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 22px;
+    }
+    .onboarding-step {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 10px;
+      align-items: start;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .onboarding-step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .onboarding-step-hint {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+    .onboarding-key {
+      display: inline-block;
+      padding: 1px 6px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .onboarding-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 0;
+    }
+    .onboarding-close:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text);
+    }
+    @media (max-width: 700px) {
+      .onboarding-steps { grid-template-columns: 1fr; }
+      .onboarding-hint { padding: 18px 44px 18px 18px; }
+    }
+
     .loading {
       max-width: 1100px;
       margin: 80px auto;
@@ -153,6 +243,40 @@
   <main style="display: none;" id="main">
     <h1 id="greeting">Здравствуйте</h1>
     <p class="subtitle">Выберите инструмент</p>
+
+    <div class="onboarding-hint" id="onboarding-hint">
+      <button class="onboarding-close" id="onboarding-close" aria-label="Закрыть">×</button>
+      <h2>Как пользоваться</h2>
+      <ol class="onboarding-steps">
+        <li class="onboarding-step">
+          <span class="onboarding-step-num">1</span>
+          <span>Выберите инструмент — ШОП или ПОП</span>
+        </li>
+        <li class="onboarding-step">
+          <span class="onboarding-step-num">2</span>
+          <div>
+            Пройдите по форме сверху вниз
+            <div class="onboarding-step-hint">
+              <span class="onboarding-key">Space</span> — следующий шаг,
+              <span class="onboarding-key">Ctrl+Z</span> — отменить
+            </div>
+          </div>
+        </li>
+        <li class="onboarding-step">
+          <span class="onboarding-step-num">3</span>
+          <div>
+            Кликайте варианты — справа в реальном времени собирается формулировка
+            <div class="onboarding-step-hint">
+              Можно сравнить, как звучит каждая опция
+            </div>
+          </div>
+        </li>
+        <li class="onboarding-step">
+          <span class="onboarding-step-num">4</span>
+          <span>В конце «Скопировать» → текст в буфере, вставляете в RIS/PACS</span>
+        </li>
+      </ol>
+    </div>
 
     <div class="apps">
       <a href="/app/cervical/" class="app-card" id="card-cervical">
@@ -204,6 +328,38 @@
       // Запретить переход к "Скоро подключим"
       document.querySelectorAll('.app-card.disabled').forEach(el => {
         el.addEventListener('click', e => e.preventDefault())
+      })
+
+      // Onboarding-подсказка: показываем при первом входе, прячем навсегда после закрытия
+      const ONBOARDING_KEY = 'drs_onboarding_dismissed'
+      const hint = document.getElementById('onboarding-hint')
+      const dismissHint = (logEvent) => {
+        if (!hint || hint.style.display === 'none') return
+        hint.style.display = 'none'
+        try { localStorage.setItem(ONBOARDING_KEY, '1') } catch (e) {}
+        if (logEvent) {
+          supabase.from('app_events').insert({
+            user_id: session.user.id,
+            event_type: 'onboarding_dismissed',
+            app_name: 'dashboard',
+            payload: { reason: logEvent, ts: new Date().toISOString() }
+          }).then(() => {}).catch(() => {})
+        }
+      }
+
+      try {
+        if (hint && !localStorage.getItem(ONBOARDING_KEY)) {
+          hint.style.display = 'block'
+        }
+      } catch (e) {
+        // localStorage недоступен (privacy mode) — просто не показываем
+      }
+
+      document.getElementById('onboarding-close').addEventListener('click', () => dismissHint('close_button'))
+
+      // Снять подсказку, если пользователь начал работать (клик по карточке инструмента)
+      document.querySelectorAll('.app-card:not(.disabled)').forEach(card => {
+        card.addEventListener('click', () => dismissHint('card_click'))
       })
     }
 
