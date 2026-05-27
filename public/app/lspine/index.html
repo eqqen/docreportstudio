@@ -1848,7 +1848,80 @@ textarea:focus-visible {
             border-color: #3498db;
         }
 
-        </style>
+        
+/* ===== Tooltip и контекстные подсказки (docreportstudio) ===== */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease 0s;
+    z-index: 9999;
+}
+[data-tooltip]::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 3px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1a1a1a;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease 0s;
+    z-index: 9999;
+}
+[data-tooltip]:hover::after,
+[data-tooltip]:hover::before {
+    opacity: 1;
+    transition-delay: 0.15s;
+}
+
+/* Напоминание «не забудь нажать Добавить изменения» — появляется только когда виден add-button-pulse */
+.actions:has(.add-button-pulse),
+.deform-actions:has(.add-button-pulse) {
+    flex-wrap: wrap;
+}
+.actions:has(.add-button-pulse)::after,
+.deform-actions:has(.add-button-pulse)::after {
+    content: "💡 не забудьте нажать «Добавить изменения» перед переходом к следующему шагу";
+    flex-basis: 100%;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 6px;
+    font-style: italic;
+    line-height: 1.45;
+    text-align: left;
+}
+
+/* Подсказка для шага с секторами диска */
+.sectors-hint {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 14px auto 10px;
+    font-size: 13px;
+    color: #1e3a8a;
+    line-height: 1.5;
+    max-width: 760px;
+    text-align: center;
+}
+.sectors-hint b { color: #1e40af; }
+/* ===== End docreportstudio additions ===== */
+
+</style>
 </head>
 
 <body>
@@ -1874,9 +1947,9 @@ textarea:focus-visible {
                 <div class="left-panel">
                     <div class="step-header-row">
                         <h2>Шаг <span id="currentStepNumber">1</span></h2>
-                        <button id="nbButton" class="nb-button" title="Пометить как важное" aria-label="Пометить шаг как важный (NB!)" aria-pressed="false">NB!</button>
+                        <button id="nbButton" class="nb-button" data-tooltip="Пометить как важное" aria-label="Пометить шаг как важный (NB!)" aria-pressed="false">NB!</button>
                         <!-- ИСПРАВЛЕНИЕ #10b: подключаем clearCurrentStep к UI -->
-                        <button id="clearStepButton" class="clear-step-button" title="Очистить только этот шаг" type="button" aria-label="Очистить данные текущего шага">↺ Очистить шаг</button>
+                        <button id="clearStepButton" class="clear-step-button" data-tooltip="Очистить только этот шаг" type="button" aria-label="Очистить данные текущего шага">↺ Очистить шаг</button>
                     </div>
                     <div id="stepDescription" class="step-description"></div>
 
@@ -1920,8 +1993,8 @@ textarea:focus-visible {
 
                     <div class="actions">
                         <div class="cw-undo-redo" role="group" aria-label="Отмена и повтор">
-                            <button id="cwUndoBtn" type="button" title="Отменить (Cmd/Ctrl+Z)" aria-label="Отменить последнее действие" disabled>↶</button>
-                            <button id="cwRedoBtn" type="button" title="Повторить (Cmd/Ctrl+Shift+Z)" aria-label="Повторить отменённое действие" disabled>↷</button>
+                            <button id="cwUndoBtn" type="button" data-tooltip="Отменить (Cmd/Ctrl+Z)" aria-label="Отменить последнее действие" disabled>↶</button>
+                            <button id="cwRedoBtn" type="button" data-tooltip="Повторить (Cmd/Ctrl+Shift+Z)" aria-label="Повторить отменённое действие" disabled>↷</button>
                         </div>
                         <button id="clearButton" class="btn btn-danger" aria-label="Сбросить весь протокол">Сброс</button>
                         <button id="copyButton" class="btn btn-secondary" aria-label="Скопировать готовый протокол в буфер обмена">Копировать протокол</button>
@@ -11809,6 +11882,12 @@ function showSubSelection(stepId, optionIndex) {
                 container.appendChild(diagramWrapper);
 
                 // Контейнер для кнопок секторов
+                // [docreportstudio] подсказка про сектора и широкую дугу
+                const sectorsHint = document.createElement('div');
+                sectorsHint.className = 'sectors-hint';
+                sectorsHint.innerHTML = 'Выбирайте несколько секторов: глубина выстояния задаётся для каждого отдельно. При выборе <b>крайних</b> секторов формулировка автоматически дополняется формой &laquo;по широкой дуге&raquo;.';
+                container.appendChild(sectorsHint);
+
                 const sectorsContainer = document.createElement('div');
                 sectorsContainer.className = 'disc-sectors-container';
 
