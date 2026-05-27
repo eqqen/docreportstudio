@@ -1786,37 +1786,6 @@
     transition-delay: 0.15s;
 }
 
-/* Напоминание «не забудь нажать Добавить изменения» — появляется только когда виден add-button-pulse */
-.actions:has(.add-button-pulse),
-.deform-actions:has(.add-button-pulse) {
-    flex-wrap: wrap;
-}
-.actions:has(.add-button-pulse)::after,
-.deform-actions:has(.add-button-pulse)::after {
-    content: "💡 не забудьте нажать «Добавить изменения» перед переходом к следующему шагу";
-    flex-basis: 100%;
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 6px;
-    font-style: italic;
-    line-height: 1.45;
-    text-align: left;
-}
-
-/* Подсказка для шага с секторами диска */
-.sectors-hint {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin: 14px auto 10px;
-    font-size: 13px;
-    color: #1e3a8a;
-    line-height: 1.5;
-    max-width: 760px;
-    text-align: center;
-}
-.sectors-hint b { color: #1e40af; }
 /* ===== End docreportstudio additions ===== */
 
 </style>
@@ -12718,13 +12687,7 @@ customDepthInput.addEventListener('input', () => {
                         container.appendChild(diagramWrapper);
 
 
-                        // [docreportstudio] подсказка про сектора и широкую дугу
-                        const sectorsHint = document.createElement('div');
-                        sectorsHint.className = 'sectors-hint';
-                        sectorsHint.innerHTML = 'Выбирайте несколько секторов: глубина выстояния задаётся для каждого отдельно. При выборе <b>крайних</b> секторов формулировка автоматически дополняется формой &laquo;по широкой дуге&raquo;.';
-                        container.appendChild(sectorsHint);
-
-                        const sectorsContainer = document.createElement('div');
+const sectorsContainer = document.createElement('div');
                         sectorsContainer.className = 'disc-sectors-container';
 
 
@@ -15520,7 +15483,40 @@ if (optionIndex === 0) {
             }
         }
 
+        // [docreportstudio] Эвристика: на странице виден пульсирующий «Добавить изменения»,
+        // и в его форме есть текстовые/числовые поля с непустыми значениями или выбранные кнопки-сектора.
+        function hasPendingAddChangesData() {
+            const pulseButtons = document.querySelectorAll('.add-button-pulse');
+            for (const btn of pulseButtons) {
+                if (btn.offsetParent === null) continue; // скрыт
+                // Поднимаемся до контейнера формы
+                let form = btn.closest('.deform-form, .options-form, .sub-selection-container, [class*="form"], #subSelectionContainer');
+                if (!form) {
+                    // fallback — родитель родителя
+                    form = btn.parentElement && btn.parentElement.parentElement;
+                }
+                if (!form) continue;
+                // 1) Любой text/number input с непустым значением
+                const inputs = form.querySelectorAll('input[type="text"], input[type="number"], input:not([type])');
+                for (const inp of inputs) {
+                    if (inp.value && String(inp.value).trim() !== '') return true;
+                }
+                // 2) Выбранные сектора-кнопки (для шага с диском)
+                const sel = form.querySelectorAll('.depth-button.selected, .disc-sector.selected, .sub-option-btn.selected');
+                if (sel.length > 0) return true;
+            }
+            return false;
+        }
+
         function goToNextStep() {
+
+            // [docreportstudio] Защита от потери данных: если виден пульсирующий
+            // «Добавить изменения» и в форме есть незакоммиченный ввод — попросить нажать кнопку
+            if (typeof hasPendingAddChangesData !== 'undefined' && hasPendingAddChangesData()) {
+                alert('Нажмите «Добавить изменения», прежде чем переходить к следующему шагу — иначе введённые данные не сохранятся.');
+                return;
+            }
+
 
             // ИСПРАВЛЕНИЕ #2: расширенная валидация шага 3 (Смещение позвонка)
             if (currentStepIndex === 2) {
