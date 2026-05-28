@@ -15484,26 +15484,31 @@ if (optionIndex === 0) {
         }
 
         // [docreportstudio] Эвристика: на странице виден пульсирующий «Добавить изменения»,
-        // и в его форме есть текстовые/числовые поля с непустыми значениями или выбранные кнопки-сектора.
+        // и в его форме есть незакоммиченные данные (input с значением, либо .selected кнопка).
+        // ВАЖНО: НЕ использовать [class*="form"] — он матчит "deform-actions" и ломает поиск.
         function hasPendingAddChangesData() {
             const pulseButtons = document.querySelectorAll('.add-button-pulse');
             for (const btn of pulseButtons) {
                 if (btn.offsetParent === null) continue; // скрыт
-                // Поднимаемся до контейнера формы
-                let form = btn.closest('.deform-form, .options-form, .sub-selection-container, [class*="form"], #subSelectionContainer');
+                // Контейнер формы — НЕ deform-actions (это actions row с кнопками)
+                let form = btn.closest('.sub-selection-container, #subSelectionContainer, .deform-form, .options-form');
                 if (!form) {
-                    // fallback — родитель родителя
+                    // fallback: subContainer обычно parentElement.parentElement
                     form = btn.parentElement && btn.parentElement.parentElement;
                 }
                 if (!form) continue;
-                // 1) Любой text/number input с непустым значением
+                // Любой текст/число input с непустым значением
                 const inputs = form.querySelectorAll('input[type="text"], input[type="number"], input:not([type])');
                 for (const inp of inputs) {
                     if (inp.value && String(inp.value).trim() !== '') return true;
                 }
-                // 2) Выбранные сектора-кнопки (для шага с диском)
-                const sel = form.querySelectorAll('.depth-button.selected, .disc-sector.selected, .sub-option-btn.selected');
-                if (sel.length > 0) return true;
+                // Выбранные опции/сектора (исключая карточки уже добавленных entries)
+                const sel = form.querySelectorAll('.sub-option-btn.selected, .depth-button.selected, .disc-sector.selected, button.selected');
+                for (const el of sel) {
+                    // Исключаем элементы внутри списка уже сохранённых записей
+                    if (el.closest('.deform-entries-container')) continue;
+                    return true;
+                }
             }
             return false;
         }

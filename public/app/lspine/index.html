@@ -14713,12 +14713,13 @@ function goToPreviousStep() {
 }
 
 // [docreportstudio] Эвристика: на странице виден пульсирующий «Добавить изменения»,
-// и в его форме есть текстовые/числовые поля с непустыми значениями или выбранные кнопки-сектора.
+// и в его форме есть незакоммиченные данные (input с значением, либо .selected кнопка).
+// ВАЖНО: НЕ использовать [class*="form"] — он матчит "deform-actions" и ломает поиск.
 function hasPendingAddChangesData() {
     const pulseButtons = document.querySelectorAll('.add-button-pulse');
     for (const btn of pulseButtons) {
         if (btn.offsetParent === null) continue;
-        let form = btn.closest('.deform-form, .options-form, .sub-selection-container, [class*="form"], #subSelectionContainer');
+        let form = btn.closest('.sub-selection-container, #subSelectionContainer, .deform-form, .options-form');
         if (!form) {
             form = btn.parentElement && btn.parentElement.parentElement;
         }
@@ -14727,8 +14728,11 @@ function hasPendingAddChangesData() {
         for (const inp of inputs) {
             if (inp.value && String(inp.value).trim() !== '') return true;
         }
-        const sel = form.querySelectorAll('.depth-button.selected, .disc-sector.selected, .sub-option-btn.selected');
-        if (sel.length > 0) return true;
+        const sel = form.querySelectorAll('.sub-option-btn.selected, .depth-button.selected, .disc-sector.selected, button.selected');
+        for (const el of sel) {
+            if (el.closest('.deform-entries-container')) continue;
+            return true;
+        }
     }
     return false;
 }
